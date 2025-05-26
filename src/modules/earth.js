@@ -21,7 +21,7 @@ earthNightTexture.colorSpace = THREE.SRGBColorSpace
 earthNightTexture.anisotropy = 8
 
 // Earth Mesh
-const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
+const earthGeometry = new THREE.SphereGeometry(4, 64, 64)
 const earthMaterial = new THREE.ShaderMaterial({
     vertexShader: earthVertexShader,
     fragmentShader: earthFragmentShader,
