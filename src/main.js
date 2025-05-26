@@ -114,7 +114,12 @@ document.addEventListener('keydown', (event) => {
         const voiceIndex = parseInt(key) - 1;
         voices[voiceIndex].play();
     }
-
+    if (key === '0') {
+        fadeToBlack(document.querySelector('canvas'));
+    }
+    if (key === '9') {
+        fadeToNormal(document.querySelector('canvas'));
+    }
     // Space to stop all voices
     if (key === ' ') {
         event.preventDefault(); // Prevent page scroll
@@ -138,7 +143,13 @@ console.log('Audio controls ready:');
 console.log('Keys 1-5: Play voice clips');
 console.log('Spacebar: Stop all voices');
 console.log('B: Toggle background music');
+function fadeToBlack(canvas) {
+    canvas.style.filter = 'brightness(0)';
+}
 
+function fadeToNormal(canvas) {
+    canvas.style.filter = 'brightness(1)';
+}
 /**
  * Animate
  */
