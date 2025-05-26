@@ -4,7 +4,7 @@ import { camera, controls } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
 import { debugSun } from './modules/sun.js'
-import { voice1 } from './modules/audio.js'
+import { voices } from './modules/audio.js'
 
 // Add objects to scene
 scene.add(earth)
@@ -22,10 +22,11 @@ const tick = () => {
     const deltaTime = elapsedTime - lastTime
     lastTime = elapsedTime
 
-    // Handle voice timing
-    if ((elapsedTime > voice1.startTime && elapsedTime < voice1.startTime + voice1.length) && !voice1.source.isPlaying) {
-        voice1.init()
-    }
+    voices.forEach(voice => {
+        if (elapsedTime > voice.startTime && elapsedTime < voice.startTime + voice.length && !voice.source.isPlaying) {
+            voice.init()
+        }
+    })
 
     // Update earth rotation
     earth.rotation.y = elapsedTime * 0.01
