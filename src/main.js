@@ -1,40 +1,19 @@
 import * as THREE from 'three'
 import { scene } from './modules/scene.js'
 import { loadingManager } from './modules/loadingManager.js'
-import { camera } from './modules/camera.js'
+import { camera, controls } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
-//import { debugSun } from './modules/sun.js'
-import Voice from './modules/audio.js'
+import { audioListener, audioLoader, voices, backgroundAudio } from './modules/audio.js'
 import { sizes } from './modules/sizes.js'
 import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
 const loadingText = document.querySelector('.loading-text')
 // Audio setup
-const audioLoader = new THREE.AudioLoader(loadingManager)
-const audioListener = new THREE.AudioListener()
+
 
 // Add listener to camera
 camera.add(audioListener)
 
-// Background audio
-const backgroundAudio = new THREE.Audio(audioListener)
-audioLoader.load('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6GzTrNDHpdA0OeNjSEu58bIy2lJ1sVPrcW6oq', (buffer) => {
-    backgroundAudio.setBuffer(buffer)
-    backgroundAudio.setLoop(true)
-    backgroundAudio.setVolume(0.5)
-})
-
-
-
-const voice1 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6CFTy6pBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 14, 10, 1, audioListener,audioLoader);
-const voice2 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6C1UGrVBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 13, 24, 2, audioListener,audioLoader);
-const voice3 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6cDzsnjeOt40dfgIDuQ9YPMvkmFVGUyL5KSae', 11, 37, 3, audioListener,audioLoader);
-const voice4 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP60hdwjdan3Me5BhKlTQgzrdk2SRuA1HmwCtn4', 15, 48, 4, audioListener,audioLoader);
-const voice5 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6o7v4IrVTkUpE81bgK3uCXhQ5cZtDNaYiJzeI', 14, 63, 5, audioListener,audioLoader);
-const voice6 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6qRtr9WOjaTewnrFyYC4cVmM723xEAS6JsfKZ', 14, 77, 6, audioListener,audioLoader);
-const voice7 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP694agx9cyATm5n8u9pedcghjwvyD7ExKCzfWF', 15, 91, 7, audioListener,audioLoader);
-
-const voices = [voice1, voice2, voice3, voice4, voice5, voice6, voice7]
 
 let objectsInScene = false;
 // Keyboard controls for audio cues
@@ -43,14 +22,13 @@ let isBlack = true;
 
 const clock = new THREE.Clock()
 let lastTime = 0
-
+let count = 0
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
     lastTime = elapsedTime
-    // if (voices.every(voice => voice.ready) && isBlack) {
-    //     fadeToNormal(document.querySelector('canvas'));
-    // }
+    controls.update(deltaTime)
+    
     if (loadingManager.isLoaded && !objectsInScene) {
         scene.add(earth)
         scene.add(atmosphere)
@@ -69,16 +47,19 @@ const tick = () => {
     // Update earth rotation
     earth.rotation.y = elapsedTime * 0.01
 
-    // Camera orbit (uncomment if you want automatic camera movement)
     // camera.position.x = Math.sin(elapsedTime * 0.001) * 14
     // camera.position.z = Math.cos(elapsedTime * 0.001) * 14
-    camera.lookAt(earth.position)
 
     // Render
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+
+    if (count < 1) {
+        count++;
+        camera.lookAt(0,0,0);
+    }
 }
 
 tick()
