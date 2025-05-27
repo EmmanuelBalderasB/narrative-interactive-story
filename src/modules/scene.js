@@ -1,6 +1,11 @@
 import * as THREE from 'three'
 
 const scene = new THREE.Scene()
+const textureLoader = new THREE.TextureLoader()
+
+const backgroundTexture = textureLoader.load('./hdri/8k_stars.jpg')
+//backgroundTexture.mapping = THREE.EquirectangularReflectionMapping
+scene.background = backgroundTexture
 
 // Add ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)

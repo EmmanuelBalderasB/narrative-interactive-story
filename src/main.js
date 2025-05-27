@@ -73,9 +73,6 @@ document.addEventListener('keydown', (event) => {
 });
 
 console.log('Audio controls ready:');
-console.log('Keys 1-5: Play voice clips');
-console.log('Spacebar: Stop all voices');
-console.log('B: Toggle background music');
 function fadeToBlack(canvas) {
     canvas.style.filter = 'brightness(0)';
 }
