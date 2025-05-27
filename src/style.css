@@ -14,5 +14,29 @@ body {
   left: 0;
   outline: none;
   filter: brightness(0);
-  transition: filter 2s ease-in-out;
+  transition: filter 20s ease-in-out;
+}
+.ui {
+  z-index: 1;
+}
+
+.loading-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  stroke-width: 3px;
+  stroke: #000;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px #fff;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
 }
