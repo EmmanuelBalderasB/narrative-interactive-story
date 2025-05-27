@@ -6,10 +6,10 @@ const sunSpherical = new THREE.Spherical(1, Math.PI * 0.5, 0.5)
 const sunDirection = new THREE.Vector3()
 
 // Debug
-const debugSun = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(0, 2),
-    new THREE.MeshBasicMaterial()
-)
+// const debugSun = new THREE.Mesh(
+//     new THREE.IcosahedronGeometry(0, 2),
+//     new THREE.MeshBasicMaterial()
+// )
 
 // Update
 const updateSun = () => {
@@ -17,9 +17,9 @@ const updateSun = () => {
     sunDirection.setFromSpherical(sunSpherical)
 
     // Debug
-    debugSun.position
-        .copy(sunDirection)
-        .multiplyScalar(5)
+    //debugSun.position
+    //    .copy(sunDirection)
+    //    .multiplyScalar(5)
 
     // Uniforms
     earthMaterial.uniforms.uSunDirection.value.copy(sunDirection)
@@ -28,4 +28,4 @@ const updateSun = () => {
 
 updateSun()
 
-export { debugSun, updateSun } 
+export { updateSun } 
