@@ -1,17 +1,16 @@
 import * as THREE from 'three'
 import { scene } from './modules/scene.js'
+import { loadingManager } from './modules/loadingManager.js'
 import { camera } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
-import { debugSun } from './modules/sun.js'
+//import { debugSun } from './modules/sun.js'
 import Voice from './modules/audio.js'
-// Add objects to scene
-scene.add(earth)
-//scene.add(atmosphere)
-scene.add(debugSun)
-
+import { sizes } from './modules/sizes.js'
+import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
+const loadingText = document.querySelector('.loading-text')
 // Audio setup
-const audioLoader = new THREE.AudioLoader()
+const audioLoader = new THREE.AudioLoader(loadingManager)
 const audioListener = new THREE.AudioListener()
 
 // Add listener to camera
@@ -23,7 +22,6 @@ audioLoader.load('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6GzTrNDHpdA0OeNjSEu58bI
     backgroundAudio.setBuffer(buffer)
     backgroundAudio.setLoop(true)
     backgroundAudio.setVolume(0.5)
-    backgroundAudio.play()
 })
 
 
@@ -38,7 +36,53 @@ const voice7 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP694agx9cyATm5n8
 
 const voices = [voice1, voice2, voice3, voice4, voice5, voice6, voice7]
 
+let objectsInScene = false;
 // Keyboard controls for audio cues
+
+let isBlack = true;
+
+const clock = new THREE.Clock()
+let lastTime = 0
+
+const tick = () => {
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - lastTime
+    lastTime = elapsedTime
+    // if (voices.every(voice => voice.ready) && isBlack) {
+    //     fadeToNormal(document.querySelector('canvas'));
+    // }
+    if (loadingManager.isLoaded && !objectsInScene) {
+        scene.add(earth)
+        scene.add(atmosphere)
+
+        loadingText.textContent = 'Click to start'
+        objectsInScene = true;
+        loadingText.style.cursor = 'pointer';
+        loadingText.addEventListener('click', (e) => {
+            e.preventDefault();
+            backgroundAudio.play()
+            fadeToNormal(document.querySelector('canvas'), isBlack);
+           
+            e.target.style.display = 'none';
+        })
+    }
+    // Update earth rotation
+    earth.rotation.y = elapsedTime * 0.01
+
+    // Camera orbit (uncomment if you want automatic camera movement)
+    // camera.position.x = Math.sin(elapsedTime * 0.001) * 14
+    // camera.position.z = Math.cos(elapsedTime * 0.001) * 14
+    camera.lookAt(earth.position)
+
+    // Render
+    renderer.render(scene, camera)
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick)
+}
+
+tick()
+window.scene = scene;
 document.addEventListener('keydown', (event) => {
     const key = event.key;
 
@@ -48,10 +92,10 @@ document.addEventListener('keydown', (event) => {
         voices[voiceIndex].play();
     }
     if (key === '0') {
-        fadeToBlack(document.querySelector('canvas'));
+        fadeToBlack(document.querySelector('canvas'), isBlack);
     }
     if (key === '9') {
-        fadeToNormal(document.querySelector('canvas'));
+        fadeToNormal(document.querySelector('canvas'), isBlack);
     }
     // Space to stop all voices
     if (key === ' ') {
@@ -71,39 +115,3 @@ document.addEventListener('keydown', (event) => {
         }
     }
 });
-
-console.log('Audio controls ready:');
-function fadeToBlack(canvas) {
-    canvas.style.filter = 'brightness(0)';
-}
-
-function fadeToNormal(canvas) {
-    canvas.style.filter = 'brightness(1)';
-}
-/**
- * Animate
- */
-const clock = new THREE.Clock()
-let lastTime = 0
-
-const tick = () => {
-    const elapsedTime = clock.getElapsedTime()
-    const deltaTime = elapsedTime - lastTime
-    lastTime = elapsedTime
-
-    // Update earth rotation
-    earth.rotation.y = elapsedTime * 0.01
-
-    // Camera orbit (uncomment if you want automatic camera movement)
-    // camera.position.x = Math.sin(elapsedTime * 0.001) * 14
-    // camera.position.z = Math.cos(elapsedTime * 0.001) * 14
-    camera.lookAt(earth.position)
-
-    // Render
-    renderer.render(scene, camera)
-
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
-}
-
-tick()
