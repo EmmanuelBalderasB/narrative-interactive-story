@@ -1,67 +1,26 @@
 import * as THREE from 'three'
+import { loadingManager } from './loadingManager.js'
+import Voice from '../helpers/Voice.js'
 import { camera } from './camera.js'
 
-export default class Voice {
-    constructor(url, length, startTime, id, audioListener,audioLoader) {
-        this.url = url;
-        this.length = length;
-        this.startTime = startTime;
-        this.id = id;
-        this.isLoaded = false;
-        this.buffer = null;
-        this.audioListener = audioListener;
-        this.audioLoader = audioLoader;
-        this.ready = false;
-        // Use the shared audioListener
-        this.source = new THREE.Audio(this.audioListener);
-        // Add the audio source to the camera so it can be heard
-        camera.add(this.source);
+const audioLoader = new THREE.AudioLoader(loadingManager)
+const audioListener = new THREE.AudioListener()
 
-        // Load audio immediately
-        this.loadAudio();
-    }
+const backgroundAudio = new THREE.Audio(audioListener)
+audioLoader.load('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6GzTrNDHpdA0OeNjSEu58bIy2lJ1sVPrcW6oq', (buffer) => {
+    backgroundAudio.setBuffer(buffer)
+    backgroundAudio.setLoop(true)
+    backgroundAudio.setVolume(0.5)
+})
 
-    loadAudio() {
-        console.log(`Loading voice ${this.id}...`);
+const voice1 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6CFTy6pBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 14, 15, 1, audioListener,audioLoader, camera);
+const voice2 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6C1UGrVBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 13, 29, 2, audioListener,audioLoader, camera);
+const voice3 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6cDzsnjeOt40dfgIDuQ9YPMvkmFVGUyL5KSae', 11, 42, 3, audioListener,audioLoader, camera);
+const voice4 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP60hdwjdan3Me5BhKlTQgzrdk2SRuA1HmwCtn4', 15, 53, 4, audioListener,audioLoader, camera);
+const voice5 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6o7v4IrVTkUpE81bgK3uCXhQ5cZtDNaYiJzeI', 14, 68, 5, audioListener,audioLoader, camera);
+const voice6 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6qRtr9WOjaTewnrFyYC4cVmM723xEAS6JsfKZ', 14, 82, 6, audioListener,audioLoader, camera);
+const voice7 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP694agx9cyATm5n8u9pedcghjwvyD7ExKCzfWF', 15, 96, 7, audioListener,audioLoader, camera);
 
-        this.audioLoader.load(this.url, (buffer) => {
-            this.buffer = buffer;
-            this.source.setBuffer(buffer);
-            this.source.setVolume(0.5);
-            this.isLoaded = true;
-            this.ready = true;
-            console.log(`Voice ${this.id} loaded and ready`);
-        });
-    }
+const voices = [voice1, voice2, voice3, voice4, voice5, voice6, voice7]
 
-    play() {
-        if (!this.isLoaded) {
-            console.warn(`Voice ${this.id} not loaded yet`);
-            return;
-        }
-
-        if (this.source.isPlaying) {
-            this.source.stop();
-        }   
-
-        // Create a new audio source for each play to avoid conflicts
-        this.source = new THREE.Audio(this.audioListener);
-        this.source.setBuffer(this.buffer);
-        this.source.setVolume(0.5);
-        camera.add(this.source);
-
-        this.source.play();
-        console.log(`Playing voice ${this.id}`);
-    }
-
-    stop() {
-        if (this.source && this.source.isPlaying) {
-            this.source.stop();
-            console.log(`Stopped voice ${this.id}`);
-        }
-    }
-
-    isPlaying() {
-        return this.source && this.source.isPlaying;
-    }
-}
+export { audioListener, audioLoader, voices, backgroundAudio }
