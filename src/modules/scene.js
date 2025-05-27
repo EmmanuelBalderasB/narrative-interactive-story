@@ -1,7 +1,8 @@
 import * as THREE from 'three'
+import { loadingManager } from './loadingManager.js'
 
 const scene = new THREE.Scene()
-const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader(loadingManager)
 
 const backgroundTexture = textureLoader.load('./hdri/8k_stars.jpg')
 //backgroundTexture.mapping = THREE.EquirectangularReflectionMapping

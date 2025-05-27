@@ -1,10 +1,12 @@
 import * as THREE from 'three'
 import { sizes } from './sizes.js'
+import { loadingManager } from './loadingManager.js'
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('canvas.webgl'),
     antialias: true,
-    powerPreference: "high-performance"
+    powerPreference: "high-performance",
+    loadingManager: loadingManager
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(sizes.pixelRatio)

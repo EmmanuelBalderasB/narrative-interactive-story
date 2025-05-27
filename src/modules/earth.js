@@ -3,6 +3,7 @@ import earthVertexShader from '../shaders/earth/vertex.glsl'
 import earthFragmentShader from '../shaders/earth/fragment.glsl'
 import atmosphereVertexShader from '../shaders/atmosphere/vertex.glsl'
 import atmosphereFragmentShader from '../shaders/atmosphere/fragment.glsl'
+import { loadingManager } from './loadingManager.js'
 
 const earthParameters = {
     atmosphereDayColor: '#a3a3a3',
@@ -10,7 +11,7 @@ const earthParameters = {
 }
 
 // Textures
-const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader(loadingManager)
 
 const earthDayTexture = textureLoader.load('./earth/day.jpg')
 earthDayTexture.colorSpace = THREE.SRGBColorSpace

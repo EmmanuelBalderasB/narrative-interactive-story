@@ -11,6 +11,7 @@ export default class Voice {
         this.buffer = null;
         this.audioListener = audioListener;
         this.audioLoader = audioLoader;
+        this.ready = false;
         // Use the shared audioListener
         this.source = new THREE.Audio(this.audioListener);
         // Add the audio source to the camera so it can be heard
@@ -28,16 +29,9 @@ export default class Voice {
             this.source.setBuffer(buffer);
             this.source.setVolume(0.5);
             this.isLoaded = true;
+            this.ready = true;
             console.log(`Voice ${this.id} loaded and ready`);
-        },
-            // Progress callback
-            (progress) => {
-                console.log(`Loading voice ${this.id}: ${(progress.loaded / progress.total * 100).toFixed(1)}%`);
-            },
-            // Error callback
-            (error) => {
-                console.error(`Error loading voice ${this.id}:`, error);
-            });
+        });
     }
 
     play() {
