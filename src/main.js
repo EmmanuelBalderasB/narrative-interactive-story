@@ -8,6 +8,8 @@ import { audioListener, voices, backgroundAudio, playBackgroundAudio } from './m
 import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
 import { StageManager } from './modules/stageManager.js'
 import { Stage } from './helpers/Stage.js'
+import { ring } from './modules/ring.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 const loadingText = document.querySelector('.loading-text')
 const nextButton = document.querySelector('.next-button')
 // Add listener to camera
@@ -33,8 +35,10 @@ stageManager.addStage(new Stage(voices[5], camera, new THREE.Vector3(camera.posi
 stageManager.addStage(new Stage(voices[6], camera, new THREE.Vector3(camera.position.x - 60, 0, 0), clock, 6, 4, oscillationAmplitude, oscillationFrequency));
 
 window.stageManager = stageManager;
-
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 const tick = () => {
+    controls.update();
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
     lastTime = elapsedTime
@@ -42,6 +46,7 @@ const tick = () => {
     if (loadingManager.isLoaded && !objectsInScene) {
         scene.add(earth)
         scene.add(atmosphere)
+        scene.add(ring)
         loadingText.addEventListener('click', (e) => {
             e.preventDefault();
             playBackgroundAudio();
