@@ -45,7 +45,7 @@ export default class Voice {
         // Create a new audio source for each play to avoid conflicts
         this.source = new THREE.Audio(this.audioListener);
         this.source.setBuffer(this.buffer);
-        this.source.setVolume(0.5);
+        this.source.setVolume(0.3);
         this.camera.add(this.source);
 
         this.source.play();
