@@ -7,11 +7,20 @@ const audioLoader = new THREE.AudioLoader(loadingManager)
 const audioListener = new THREE.AudioListener()
 
 const backgroundAudio = new THREE.Audio(audioListener)
+let isBackgroundAudioLoaded = false;
+
 audioLoader.load('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6GzTrNDHpdA0OeNjSEu58bIy2lJ1sVPrcW6oq', (buffer) => {
     backgroundAudio.setBuffer(buffer)
     backgroundAudio.setLoop(true)
     backgroundAudio.setVolume(1)
+    isBackgroundAudioLoaded = true;
 })
+
+const playBackgroundAudio = () => {
+    if (isBackgroundAudioLoaded && !backgroundAudio.isPlaying) {
+        backgroundAudio.play();
+    }
+}
 
 const voice1 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6CFTy6pBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 14, 15, 1, audioListener,audioLoader, camera);
 const voice2 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6C1UGrVBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 13, 29, 2, audioListener,audioLoader, camera);
@@ -23,4 +32,4 @@ const voice7 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP694agx9cyATm5n8
 
 const voices = [voice1, voice2, voice3, voice4, voice5, voice6, voice7]
 
-export { audioListener, audioLoader, voices, backgroundAudio }
+export { audioListener, audioLoader, voices, backgroundAudio, playBackgroundAudio }
