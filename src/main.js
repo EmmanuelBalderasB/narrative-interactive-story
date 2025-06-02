@@ -4,25 +4,22 @@ import { loadingManager } from './modules/loadingManager.js'
 import { camera, controls } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
-import { audioListener, audioLoader, voices, backgroundAudio } from './modules/audio.js'
+import { audioListener, voices, backgroundAudio } from './modules/audio.js'
 import { sizes } from './modules/sizes.js'
 import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
-const loadingText = document.querySelector('.loading-text')
-// Audio setup
 
+const loadingText = document.querySelector('.loading-text')
 
 // Add listener to camera
 camera.add(audioListener)
 
-
-let objectsInScene = false;
-// Keyboard controls for audio cues
-
-let isBlack = true;
-
 const clock = new THREE.Clock()
+
+// Flags
+let objectsInScene = false;
+let isBlack = true;
 let lastTime = 0
-let count = 0
+
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
@@ -44,26 +41,22 @@ const tick = () => {
             e.target.style.display = 'none';
         })
     }
+    
     // Update earth rotation
     earth.rotation.y = elapsedTime * 0.01
-
-    // camera.position.x = Math.sin(elapsedTime * 0.001) * 14
-    // camera.position.z = Math.cos(elapsedTime * 0.001) * 14
 
     // Render
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
-
-    if (count < 1) {
-        count++;
-        camera.lookAt(0,0,0);
-    }
 }
 
 tick()
+
 window.scene = scene;
+
+// Keyboard controls for audio cues
 document.addEventListener('keydown', (event) => {
     const key = event.key;
 

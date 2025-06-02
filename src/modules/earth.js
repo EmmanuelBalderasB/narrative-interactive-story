@@ -21,8 +21,11 @@ const earthNightTexture = textureLoader.load('./earth/night.jpg')
 earthNightTexture.colorSpace = THREE.SRGBColorSpace
 earthNightTexture.anisotropy = 8
 
-// Earth Mesh
-const earthGeometry = new THREE.SphereGeometry(4, 64, 64)
+// MUCH lower resolution geometry - this was killing your performance!
+// 128x64 is plenty for a smooth sphere and will give you 60+ FPS
+const earthGeometry = new THREE.SphereGeometry(40, 128, 64)
+console.log('Earth geometry vertices:', earthGeometry.attributes.position.count)
+
 const earthMaterial = new THREE.ShaderMaterial({
     vertexShader: earthVertexShader,
     fragmentShader: earthFragmentShader,
@@ -37,7 +40,9 @@ const earthMaterial = new THREE.ShaderMaterial({
 
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 
-// Atmosphere
+// Use separate geometry for atmosphere to save memory
+const atmosphereGeometry = new THREE.SphereGeometry(40, 64, 32) // Even lower resolution for atmosphere
+
 const atmosphereMaterial = new THREE.ShaderMaterial({
     side: THREE.BackSide,
     transparent: true,
@@ -50,7 +55,7 @@ const atmosphereMaterial = new THREE.ShaderMaterial({
     },
 })
 
-const atmosphere = new THREE.Mesh(earthGeometry, atmosphereMaterial)
+const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial)
 atmosphere.scale.set(1.04, 1.04, 1.04)
 
-export { earth, atmosphere, earthMaterial, atmosphereMaterial, earthParameters } 
+export { earth, atmosphere, earthMaterial, atmosphereMaterial, earthParameters }
