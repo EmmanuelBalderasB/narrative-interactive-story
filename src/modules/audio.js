@@ -10,7 +10,7 @@ const backgroundAudio = new THREE.Audio(audioListener)
 audioLoader.load('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6GzTrNDHpdA0OeNjSEu58bIy2lJ1sVPrcW6oq', (buffer) => {
     backgroundAudio.setBuffer(buffer)
     backgroundAudio.setLoop(true)
-    backgroundAudio.setVolume(0.5)
+    backgroundAudio.setVolume(1)
 })
 
 const voice1 = new Voice('https://b7ftxmps0k.ufs.sh/f/VCclx06vKdP6CFTy6pBw3qNKntEZOYIQ619UX4VrSPeWhjA2', 14, 15, 1, audioListener,audioLoader, camera);
