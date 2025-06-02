@@ -24,8 +24,6 @@ export default class Voice {
 
         this.audioLoader.load(this.url, (buffer) => {
             this.buffer = buffer;
-            this.source.setBuffer(buffer);
-            this.source.setVolume(0.1);
             this.isLoaded = true;
             this.ready = true;
             console.log(`Voice ${this.id} loaded and ready`);
@@ -48,7 +46,7 @@ export default class Voice {
         this.source.setVolume(0.3);
         this.camera.add(this.source);
 
-        this.source.play();
+        this.source.play(2);
         console.log(`Playing voice ${this.id}`);
     }
 
