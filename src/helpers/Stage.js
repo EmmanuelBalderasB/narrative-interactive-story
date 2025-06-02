@@ -1,5 +1,5 @@
 import { gsap } from 'gsap';
-
+const nextButton = document.querySelector('.next-button')
 class Stage {
     constructor(voice, cameraInstance, cameraTargetPosition, clock, name, duration, oscillationAmplitude, oscillationFrequency, text) {
         this.voice = voice;
@@ -30,16 +30,17 @@ class Stage {
                 duration: this.duration,
                 ease: 'power2.inOut'
             });
-            if(this.name === 0) {
-                setTimeout(() => {
-                    this.voice.play();
-                }, 2000);
-            } else {
-                this.voice.play();
-            }
+            
+            // Set up the onEnded callback before playing
+            this.voice.setOnEnded(() => {
+                console.log('Voice ended');
+                nextButton.style.opacity = 1;
+            });
+            
+            this.voice.play();
+            
         if (this.cameraInstance.position.distanceTo(this.cameraTargetPosition) < 0.1) {
             this.isAtTarget = true;
-            
         }
     }
     update(deltaTime) {

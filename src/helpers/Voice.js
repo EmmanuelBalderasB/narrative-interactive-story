@@ -46,6 +46,14 @@ export default class Voice {
         this.source.setVolume(0.3);
         this.camera.add(this.source);
 
+        // Set up the onEnded callback before playing
+        this.source.onEnded = () => {
+            console.log(`Voice ${this.id} ended`);
+            if (this.onEndedCallback) {
+                this.onEndedCallback();
+            }
+        };
+
         this.source.play(2);
         console.log(`Playing voice ${this.id}`);
     }
@@ -59,5 +67,9 @@ export default class Voice {
 
     isPlaying() {
         return this.source && this.source.isPlaying;
+    }
+
+    setOnEnded(callback) {
+        this.onEndedCallback = callback;
     }
 }

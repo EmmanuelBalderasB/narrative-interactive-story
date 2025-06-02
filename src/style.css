@@ -89,6 +89,7 @@ body {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, opacity var(--time-transition) ease-in-out;
   opacity: 0;
+  z-index: 1;
 }
 
 .next-button:hover {
