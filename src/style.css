@@ -1,3 +1,7 @@
+:root {
+  --time-transition: 10s;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,7 +19,8 @@ body {
   left: 0;
   outline: none;
   filter: brightness(0);
-  transition: filter 2s ease-in-out;
+  transition: filter var(--time-transition) ease-in-out;
+  z-index: -1;
 }
 .ui {
   z-index: 1;
@@ -40,4 +45,54 @@ body {
   text-transform: uppercase;
   letter-spacing: 2px;
   text-align: center;
+  z-index: 1;
 }
+
+.text-container {
+    position: absolute;
+    top: 75%;
+    left: 2.5%;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1;
+    text-align: left;
+    max-width: 600px;
+    padding: 20px;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity var(--time-transition) ease-in-out;
+}
+
+.text-container.visible {
+    opacity: 1;
+}
+
+.text {
+    margin-bottom: 1em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.next-button {
+  position: absolute;
+  top: 85%;
+  left: 80%;
+  background: none;
+  color: #f1f1f1;
+  border: 2px solid #f1f1f1;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, opacity var(--time-transition) ease-in-out;
+  opacity: 0;
+}
+
+.next-button:hover {
+  background-color: #f1f1f1;
+  color: #000;
+}
+
