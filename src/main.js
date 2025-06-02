@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 import { scene } from './modules/scene.js'
 import { loadingManager } from './modules/loadingManager.js'
-import { camera, controls } from './modules/camera.js'
+import { camera } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
 import { audioListener, voices, backgroundAudio } from './modules/audio.js'
-import { sizes } from './modules/sizes.js'
 import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
-
+import { StageManager } from './modules/stageManager.js'
+import { Stage } from './helpers/Stage.js'
 const loadingText = document.querySelector('.loading-text')
 
 // Add listener to camera
@@ -20,11 +20,23 @@ let objectsInScene = false;
 let isBlack = true;
 let lastTime = 0
 
+const oscillationAmplitude = 0.01;
+const oscillationFrequency = 1;
+
+const stageManager = new StageManager();
+stageManager.addStage(new Stage(voices[0], camera, camera.position.clone(), clock, 0, 4, oscillationAmplitude, oscillationFrequency));
+stageManager.addStage(new Stage(voices[1], camera, new THREE.Vector3(camera.position.x - 100, 0, 0), clock, 1, 4, oscillationAmplitude, oscillationFrequency));
+stageManager.addStage(new Stage(voices[2], camera, new THREE.Vector3(camera.position.x - 200, 0, 0), clock, 2, 4, oscillationAmplitude, oscillationFrequency));
+stageManager.addStage(new Stage(voices[3], camera, new THREE.Vector3(camera.position.x - 30, 0, 0), clock, 3, 4, oscillationAmplitude, oscillationFrequency));
+stageManager.addStage(new Stage(voices[4], camera, new THREE.Vector3(camera.position.x - 40, 0, 0), clock, 4, 4, oscillationAmplitude, oscillationFrequency));
+stageManager.addStage(new Stage(voices[5], camera, new THREE.Vector3(camera.position.x - 50, 0, 0), clock, 5, 4, oscillationAmplitude, oscillationFrequency));
+stageManager.addStage(new Stage(voices[6], camera, new THREE.Vector3(camera.position.x - 60, 0, 0), clock, 6, 4, oscillationAmplitude, oscillationFrequency));
+
+window.stageManager = stageManager;
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
     lastTime = elapsedTime
-    controls.update(deltaTime)
     
     if (loadingManager.isLoaded && !objectsInScene) {
         scene.add(earth)
@@ -39,9 +51,10 @@ const tick = () => {
             fadeToNormal(document.querySelector('canvas'), isBlack);
            
             e.target.style.display = 'none';
+            stageManager.activateStage(0);
         })
     }
-    
+    stageManager.update(deltaTime);
     // Update earth rotation
     earth.rotation.y = elapsedTime * 0.01
 
