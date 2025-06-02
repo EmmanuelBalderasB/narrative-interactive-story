@@ -4,12 +4,12 @@ import { loadingManager } from './modules/loadingManager.js'
 import { camera } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
-import { audioListener, voices, backgroundAudio } from './modules/audio.js'
+import { audioListener, voices, backgroundAudio, playBackgroundAudio } from './modules/audio.js'
 import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
 import { StageManager } from './modules/stageManager.js'
 import { Stage } from './helpers/Stage.js'
 const loadingText = document.querySelector('.loading-text')
-
+const nextButton = document.querySelector('.next-button')
 // Add listener to camera
 camera.add(audioListener)
 
@@ -33,6 +33,7 @@ stageManager.addStage(new Stage(voices[5], camera, new THREE.Vector3(camera.posi
 stageManager.addStage(new Stage(voices[6], camera, new THREE.Vector3(camera.position.x - 60, 0, 0), clock, 6, 4, oscillationAmplitude, oscillationFrequency));
 
 window.stageManager = stageManager;
+
 const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
@@ -41,18 +42,20 @@ const tick = () => {
     if (loadingManager.isLoaded && !objectsInScene) {
         scene.add(earth)
         scene.add(atmosphere)
-
-        loadingText.textContent = 'Click to start'
-        objectsInScene = true;
-        loadingText.style.cursor = 'pointer';
         loadingText.addEventListener('click', (e) => {
             e.preventDefault();
-            backgroundAudio.play()
-            fadeToNormal(document.querySelector('canvas'), isBlack);
+            playBackgroundAudio();
+            fadeToNormal(document.querySelector('.webgl'), isBlack);
            
+            document.querySelector('.text-container').style.opacity = 1;
+            
             e.target.style.display = 'none';
             stageManager.activateStage(0);
         })
+        loadingText.textContent = 'Click to start'
+        loadingText.style.cursor = 'pointer';
+        
+        objectsInScene = true;
     }
     stageManager.update(deltaTime);
     // Update earth rotation
@@ -74,10 +77,10 @@ document.addEventListener('keydown', (event) => {
     const key = event.key;
 
     // Keys 1-5 to play voices
-    if (key >= '1' && key <= '7') {
+    /* if (key >= '1' && key <= '7') {
         const voiceIndex = parseInt(key) - 1;
         voices[voiceIndex].play();
-    }
+    } */
     if (key === '0') {
         fadeToBlack(document.querySelector('canvas'), isBlack);
     }
@@ -85,11 +88,11 @@ document.addEventListener('keydown', (event) => {
         fadeToNormal(document.querySelector('canvas'), isBlack);
     }
     // Space to stop all voices
-    if (key === ' ') {
+    /* if (key === ' ') {
         event.preventDefault(); // Prevent page scroll
         voices.forEach(voice => voice.stop());
         console.log('Stopped all voices');
-    }
+    } */
 
     // 'b' to toggle background music
     if (key.toLowerCase() === 'b') {
@@ -97,8 +100,12 @@ document.addEventListener('keydown', (event) => {
             backgroundAudio.pause();
             console.log('Background music paused');
         } else {
-            backgroundAudio.play();
+            playBackgroundAudio();
             console.log('Background music resumed');
         }
     }
 });
+
+nextButton.addEventListener('click', () => {
+    stageManager.nextStage();
+})
