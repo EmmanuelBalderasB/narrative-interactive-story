@@ -32,10 +32,6 @@ const ring = gltfLoader.load('./ring/ring.gltf', (gltf) => {
         child.scale.multiplyScalar(scalar);
         ringPositions.push(child.position.clone());
         
-        // Debug each child's position
-        console.log(`Child ${index} type:`, child.type);
-        console.log(`Child ${index} original position:`, position);
-        
     });
     
     // Now apply scaling after positions are set and stored

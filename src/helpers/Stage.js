@@ -40,7 +40,7 @@ class Stage {
         this.fillText();
     }
     update(deltaTime) {
-        console.log('Updating');
+        //console.log('Updating');
         this.cameraInstance.position.y += Math.sin(this.clock.getElapsedTime() * this.oscillationFrequency) * this.oscillationAmplitude;
     }
     deactivate() {

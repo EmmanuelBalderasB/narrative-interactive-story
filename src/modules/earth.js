@@ -24,7 +24,6 @@ earthNightTexture.anisotropy = 8
 // MUCH lower resolution geometry - this was killing your performance!
 // 128x64 is plenty for a smooth sphere and will give you 60+ FPS
 const earthGeometry = new THREE.SphereGeometry(40, 128, 64)
-console.log('Earth geometry vertices:', earthGeometry.attributes.position.count)
 
 // Earth material
 const earthMaterial = new THREE.ShaderMaterial({
