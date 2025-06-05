@@ -26,6 +26,7 @@ earthNightTexture.anisotropy = 8
 const earthGeometry = new THREE.SphereGeometry(40, 128, 64)
 console.log('Earth geometry vertices:', earthGeometry.attributes.position.count)
 
+// Earth material
 const earthMaterial = new THREE.ShaderMaterial({
     vertexShader: earthVertexShader,
     fragmentShader: earthFragmentShader,
@@ -38,6 +39,8 @@ const earthMaterial = new THREE.ShaderMaterial({
     }
 })
 
+// Debugging material
+//const earthMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide, wireframe: true })
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 
 // Use separate geometry for atmosphere to save memory
