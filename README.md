@@ -5,9 +5,9 @@
 - [x] Camera positions
 - [x] ring positioning
 - [x] Add debris models
-- [] Activate subtitles according to stage
+- [x] Activate subtitles according to stage
 - [] Skybox for background (so sky can rotate)
-- [] Add Transitions between takes
-- [] UI with controls
+- [x] Add Transitions between takes
+- [x] UI with controls
 - [] Post Processing
 - [] 
