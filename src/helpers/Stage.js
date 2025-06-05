@@ -1,4 +1,5 @@
 import { gsap } from 'gsap';
+import { fadeToBlack, fadeToNormal } from './fade.js';
 const nextButton = document.querySelector('.next-button')
 class Stage {
     constructor(voice, cameraInstance, cameraTargetPosition, clock, name, duration, oscillationAmplitude, oscillationFrequency, text, lookAtTarget = null) {
@@ -17,9 +18,12 @@ class Stage {
         this.textContainer = document.querySelector('.text-container');
         this.i = 0;
         this.textInterval = null; // Add property to store interval ID
+        this.canvas = document.querySelector('.webgl');
+        this.finalTextContainer = document.querySelector('.final-text-container');
     }
     activate() {
         this.active = true;
+        fadeToNormal(this.canvas, true);
         gsap.to(this.cameraInstance.position, {
             x: this.cameraTargetPosition.x,
             y: this.cameraTargetPosition.y,
@@ -27,17 +31,37 @@ class Stage {
             duration: this.duration,
             ease: 'power2.inOut'
         });
-        // Remove gsap.to for lookAt, handle in render loop
+        
+        // Hide button when voice starts
+        nextButton.style.opacity = 0;
+        
         // Set up the onEnded callback before playing
         this.voice.setOnEnded(() => {
             console.log('Voice ended');
-            nextButton.style.opacity = 1;
+            // Only show button if it's not the last stage
+            if (this.name !== 6) { // Assuming 6 is the last stage index
+                nextButton.style.opacity = 1;
+            }
+            fadeToBlack(this.canvas, true);
+            this.finalTextContainer.style.opacity = 1;
         });
-        this.voice.play();
+        this.voice.play(3);
         if (this.cameraInstance.position.distanceTo(this.cameraTargetPosition) < 0.1) {
             this.isAtTarget = true;
         }
         this.fillText();
+    }
+    finalStage() {
+        this.voice.stop();
+        this.isAtTarget = false;
+        this.i = 0;
+        if (this.textInterval) {
+            clearInterval(this.textInterval);
+        }
+        this.textContainer.innerHTML = '';
+        nextButton.style.display = 'none';
+        this.finalTextContainer.style.opacity = 1;
+        this.finalTextContainer.style.display = 'block';
     }
     update(deltaTime) {
         //console.log('Updating');

@@ -1,3 +1,6 @@
+import { fadeToBlack } from '../helpers/fade.js'
+import { fadeToNormal } from '../helpers/fade.js'
+import { isBlack } from '../main.js'
 export class StageManager {
     constructor() {
         this.stages = {};
@@ -12,10 +15,12 @@ export class StageManager {
     activateStage(stageName) {
         this.stages[stageName].activate();
         this.activeStage = stageName;
+        fadeToNormal(document.querySelector('canvas'), isBlack);
     }
     deactivateStage(stageName) {
         this.stages[stageName].deactivate();
         this.activeStage = null;
+        fadeToBlack(document.querySelector('canvas'), isBlack);
     }
     update(deltaTime) {
         if(this.activeStage) {
@@ -28,6 +33,9 @@ export class StageManager {
     nextStage() {
         const currentIndex = this.activeStage
         const nextIndex = (this.activeStage + 1) % this.totalStages;
+        if (currentIndex === this.totalStages - 1) {
+            this.stages[nextIndex].finalStage();
+        }
         this.deactivateStage(this.stages[currentIndex].name);
         this.activateStage(this.stages[nextIndex].name);
     }

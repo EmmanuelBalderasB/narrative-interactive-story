@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { scene } from './modules/scene.js'
 import { loadingManager } from './modules/loadingManager.js'
 import { camera } from './modules/camera.js'
-import { renderer } from './modules/renderer.js'
+import { renderer, fx } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
 import { ring, ringPositions } from './modules/ring.js'
 import { audioListener, voices, backgroundAudio, playBackgroundAudio } from './modules/audio.js'
@@ -47,7 +47,7 @@ loadingManager.onLoad = () => {
     scene.add(atmosphere)
     scene.add(ring)
     scene.add(stars)
-    
+
     loadingText.addEventListener('click', (e) => {
         e.preventDefault();
         playBackgroundAudio();
@@ -84,13 +84,13 @@ const tick = () => {
         ringPositionsLoaded = true;
         console.log('Positions activated', stageManager.stages);
     } */
-    if (Math.random() < 0.1) {
-        const newPosition = camera.position.clone();
-        if (!newPosition.equals(lastPosition)) {
-           console.log(newPosition);
-        }
-        lastPosition = newPosition;
-    }
+    // if (Math.random() < 0.1) {
+    //     const newPosition = camera.position.clone();
+    //     if (!newPosition.equals(lastPosition)) {
+    //        console.log(newPosition);
+    //     }
+    //     lastPosition = newPosition;
+    // }
     controls.update();
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
@@ -106,6 +106,7 @@ const tick = () => {
     }
 
     renderer.render(scene, camera)
+    //fx.render()
 
     window.requestAnimationFrame(tick)
 }
@@ -150,3 +151,5 @@ document.addEventListener('keydown', (event) => {
 nextButton.addEventListener('click', () => {
     stageManager.nextStage();
 })
+
+export { isBlack }
