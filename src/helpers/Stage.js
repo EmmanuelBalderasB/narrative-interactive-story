@@ -14,6 +14,9 @@ class Stage {
         this.oscillationFrequency = oscillationFrequency;
         this.text = text;
         this.lookAtTarget = lookAtTarget || cameraTargetPosition; // Default to target position
+        this.textContainer = document.querySelector('.text-container');
+        this.i = 0;
+        this.textInterval = null; // Add property to store interval ID
     }
     activate() {
         this.active = true;
@@ -34,6 +37,7 @@ class Stage {
         if (this.cameraInstance.position.distanceTo(this.cameraTargetPosition) < 0.1) {
             this.isAtTarget = true;
         }
+        this.fillText();
     }
     update(deltaTime) {
         console.log('Updating');
@@ -43,6 +47,26 @@ class Stage {
         this.active = false;
         this.voice.stop();
         this.isAtTarget = false;
+        this.i = 0;
+        if (this.textInterval) {
+            clearInterval(this.textInterval);
+            this.textInterval = null;
+        }
+        this.textContainer.innerHTML = '';
+    }
+    fillText() {
+        if (this.textInterval) {
+            clearInterval(this.textInterval);
+        }
+        this.textInterval = setInterval(() => {
+            if (this.i >= this.text.length) {
+                clearInterval(this.textInterval);
+                this.textInterval = null;
+            } else {
+                this.textContainer.innerHTML += this.text[this.i];
+                this.i++;
+            }
+        }, 50);
     }
 }
 

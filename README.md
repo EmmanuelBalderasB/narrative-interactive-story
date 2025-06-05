@@ -2,9 +2,12 @@
 - [x] Camera positions stages array
 - [x] Camera Positional Oscillating
 - [x] Activate audio queues according to stage
+- [x] Camera positions
+- [x] ring positioning
+- [x] Add debris models
 - [] Activate subtitles according to stage
 - [] Skybox for background (so sky can rotate)
-- [] Add debris models
+- [] Add Transitions between takes
 - [] UI with controls
 - [] Post Processing
 - [] 

@@ -43,4 +43,4 @@ Alone.`
 
 const verses = [verse1, verse2, verse3, verse4, verse5, verse6, verse7]
 
-export default verses
+export { verses }
