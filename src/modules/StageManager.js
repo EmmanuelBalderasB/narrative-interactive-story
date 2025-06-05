@@ -33,11 +33,9 @@ export class StageManager {
     nextStage() {
         const currentIndex = this.activeStage
         const nextIndex = (this.activeStage + 1) % this.totalStages;
-        if (currentIndex === this.totalStages - 1) {
-            this.stages[nextIndex].finalStage();
-        }
         this.deactivateStage(this.stages[currentIndex].name);
         this.activateStage(this.stages[nextIndex].name);
+
     }
     previousStage() {
         const currentIndex = this.activeStage

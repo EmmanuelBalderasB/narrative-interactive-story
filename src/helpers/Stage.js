@@ -39,11 +39,13 @@ class Stage {
         this.voice.setOnEnded(() => {
             console.log('Voice ended');
             // Only show button if it's not the last stage
-            if (this.name !== 6) { // Assuming 6 is the last stage index
+            console.log(this.name);
+            if (this.name !== 6) {
                 nextButton.style.opacity = 1;
+            } else if (this.name === 6) {
+                this.finalStage();
             }
             fadeToBlack(this.canvas, true);
-            this.finalTextContainer.style.opacity = 1;
         });
         this.voice.play(3);
         if (this.cameraInstance.position.distanceTo(this.cameraTargetPosition) < 0.1) {
@@ -52,8 +54,6 @@ class Stage {
         this.fillText();
     }
     finalStage() {
-        this.voice.stop();
-        this.isAtTarget = false;
         this.i = 0;
         if (this.textInterval) {
             clearInterval(this.textInterval);
@@ -61,7 +61,6 @@ class Stage {
         this.textContainer.innerHTML = '';
         nextButton.style.display = 'none';
         this.finalTextContainer.style.opacity = 1;
-        this.finalTextContainer.style.display = 'block';
     }
     update(deltaTime) {
         //console.log('Updating');
