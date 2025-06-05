@@ -4,11 +4,11 @@ import { loadingManager } from './modules/loadingManager.js'
 import { camera } from './modules/camera.js'
 import { renderer } from './modules/renderer.js'
 import { earth, atmosphere } from './modules/earth.js'
+import { ring, ringPositions } from './modules/ring.js'
 import { audioListener, voices, backgroundAudio, playBackgroundAudio } from './modules/audio.js'
 import { fadeToBlack, fadeToNormal } from './helpers/fade.js'
 import { StageManager } from './modules/StageManager.js'
 import { Stage } from './helpers/Stage.js'
-import { ring } from './modules/ring.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 const loadingText = document.querySelector('.loading-text')
 const nextButton = document.querySelector('.next-button')
@@ -26,45 +26,83 @@ const oscillationAmplitude = 0.01;
 const oscillationFrequency = 1;
 
 const stageManager = new StageManager();
-stageManager.addStage(new Stage(voices[0], camera, camera.position.clone(), clock, 0, 4, oscillationAmplitude, oscillationFrequency));
-stageManager.addStage(new Stage(voices[1], camera, new THREE.Vector3(camera.position.x - 100, 0, 0), clock, 1, 4, oscillationAmplitude, oscillationFrequency));
-stageManager.addStage(new Stage(voices[2], camera, new THREE.Vector3(camera.position.x - 200, 0, 0), clock, 2, 4, oscillationAmplitude, oscillationFrequency));
-stageManager.addStage(new Stage(voices[3], camera, new THREE.Vector3(camera.position.x - 30, 0, 0), clock, 3, 4, oscillationAmplitude, oscillationFrequency));
-stageManager.addStage(new Stage(voices[4], camera, new THREE.Vector3(camera.position.x - 40, 0, 0), clock, 4, 4, oscillationAmplitude, oscillationFrequency));
-stageManager.addStage(new Stage(voices[5], camera, new THREE.Vector3(camera.position.x - 50, 0, 0), clock, 5, 4, oscillationAmplitude, oscillationFrequency));
-stageManager.addStage(new Stage(voices[6], camera, new THREE.Vector3(camera.position.x - 60, 0, 0), clock, 6, 4, oscillationAmplitude, oscillationFrequency));
 
+
+const originalOnLoad = loadingManager.onLoad;
+loadingManager.onLoad = () => {
+    for (let i = 0; i < 7; i++) {
+        if (i === 0) {
+            stageManager.addStage(new Stage(voices[i], camera, camera.position.clone(), clock, i, 4, oscillationAmplitude, oscillationFrequency, undefined, new THREE.Vector3(0, 0, 0)));
+        } else {
+            // Offset the camera position from the debris, and look at the debris
+            const debrisPos = ringPositions[Math.floor(Math.random() * ringPositions.length)];
+            const offset = new THREE.Vector3(0, 0, 20); // Move camera 20 units away in z
+            const cameraPos = debrisPos.clone().add(offset);
+            stageManager.addStage(new Stage(voices[i], camera, cameraPos, clock, i, 4, oscillationAmplitude, oscillationFrequency, undefined, debrisPos));
+        }
+    }
+    scene.add(earth)
+    scene.add(atmosphere)
+    scene.add(ring)
+    loadingText.addEventListener('click', (e) => {
+        e.preventDefault();
+        playBackgroundAudio();
+        fadeToNormal(document.querySelector('.webgl'), isBlack);
+       
+        document.querySelector('.text-container').style.opacity = 1;
+        
+        e.target.style.display = 'none';
+        stageManager.activateStage(0);
+    })
+    loadingText.textContent = 'Click to start'
+    loadingText.style.cursor = 'pointer';
+    
+    objectsInScene = true;
+    
+    // Call original onLoad function
+    if (originalOnLoad) {
+        originalOnLoad();
+    }
+};
+
+let ringPositionsLoaded = false;
 window.stageManager = stageManager;
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+let lastPosition = camera.position.clone();
 const tick = () => {
+    /* if (ringPositions.length > 1 && !ringPositionsLoaded) {
+        for (const stageKey in stageManager.stages) {
+            const stage = stageManager.stages[stageKey];
+            console.log(`${stageKey} camera target position `, stage.cameraTargetPosition);
+            if (stage.name != 0) {
+                stage.cameraTargetPosition.copy(ringPositions[Math.floor(Math.random() * ringPositions.length)]);
+            }
+        }
+        ringPositionsLoaded = true;
+        console.log('Positions activated', stageManager.stages);
+    } */
+    if (Math.random() < 0.1) {
+        const newPosition = camera.position.clone();
+        if (!newPosition.equals(lastPosition)) {
+           console.log(newPosition);
+        }
+        lastPosition = newPosition;
+    }
     controls.update();
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - lastTime
     lastTime = elapsedTime
     
-    if (loadingManager.isLoaded && !objectsInScene) {
-        scene.add(earth)
-        scene.add(atmosphere)
-        scene.add(ring)
-        loadingText.addEventListener('click', (e) => {
-            e.preventDefault();
-            playBackgroundAudio();
-            fadeToNormal(document.querySelector('.webgl'), isBlack);
-           
-            document.querySelector('.text-container').style.opacity = 1;
-            
-            e.target.style.display = 'none';
-            stageManager.activateStage(0);
-        })
-        loadingText.textContent = 'Click to start'
-        loadingText.style.cursor = 'pointer';
-        
-        objectsInScene = true;
-    }
     stageManager.update(deltaTime);
     // Update earth rotation
     earth.rotation.y = elapsedTime * 0.01
+
+    // Always look at the current stage's lookAtTarget
+    const currentStage = stageManager.getActiveStage && stageManager.getActiveStage();
+    if (currentStage && currentStage.lookAtTarget) {
+        camera.lookAt(currentStage.lookAtTarget);
+    }
 
     // Render
     renderer.render(scene, camera)
